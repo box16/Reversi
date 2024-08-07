@@ -3,9 +3,8 @@ import tkinter
 WINDOW_WIDTH = 528
 WINDOW_HEIGHT = 528
 
-BOARD_LEN = 8
-CELL_LEN = 48
 BOARD_BEGIN_OFFSET = 72
+CELL_LEN = 48
 
 GREEN = 255
 BLACK = 0
@@ -13,14 +12,19 @@ WHITE = 1
 
 
 class BORAD:
-    def __init__(self, side_len):
-        self.side_len = side_len
-        self.board = bytearray(self.side_len**2)
+    BOARD_LEN = 8
+
+    def __init__(self):
+        self.board = bytearray(self.BOARD_LEN**2)
         self.initialize()
 
     def initialize(self):
-        for i in range(self.side_len**2):
+        for i in range(self.BOARD_LEN**2):
             self.set_color(i, GREEN)
+        self.set_color(27, BLACK)
+        self.set_color(28, WHITE)
+        self.set_color(36, BLACK)
+        self.set_color(35, WHITE)
 
     def set_color(self, pos, color):
         self.board[pos] = color
@@ -37,13 +41,13 @@ class BORAD:
             return "White"
 
     def get_side_len(self):
-        return self.side_len
+        return self.BOARD_LEN
 
     def convert_index_2d_1d(self, pos):
-        return pos[1] * self.side_len + pos[0]
+        return pos[1] * self.BOARD_LEN + pos[0]
 
     def convert_index_1d_2d(self, pos):
-        return (pos % self.side_len, pos // self.side_len)
+        return (pos % self.BOARD_LEN, pos // self.BOARD_LEN)
 
 
 class BORAD_DRAWER:
@@ -64,9 +68,41 @@ class BORAD_DRAWER:
                 begin[1],
                 begin[0] + self.cell_len,
                 begin[1] + self.cell_len,
+                fill="Green",
+                width=2,
+            )
+            if board.get_color(i) == GREEN:
+                continue
+
+            r = self.cell_len / 10
+            canvas.create_oval(
+                begin[0] + r,
+                begin[1] + r,
+                begin[0] + self.cell_len - r,
+                begin[1] + self.cell_len - r,
                 fill=board.get_color_str(i),
                 width=2,
             )
+
+
+def canvas_click(click_event):
+    if (click_event.x < BOARD_BEGIN_OFFSET) or (
+        click_event.x > WINDOW_WIDTH - BOARD_BEGIN_OFFSET
+    ):
+        return
+    if (click_event.y < BOARD_BEGIN_OFFSET) or (
+        click_event.y > WINDOW_HEIGHT - BOARD_BEGIN_OFFSET
+    ):
+        return
+
+    click_pos = (
+        int((click_event.x - BOARD_BEGIN_OFFSET) / CELL_LEN),
+        int((click_event.y - BOARD_BEGIN_OFFSET) / CELL_LEN),
+    )
+    click_pos = board.convert_index_2d_1d(click_pos)
+
+    board.set_color(click_pos, BLACK)
+    drawer.draw_board(board, canvas)
 
 
 # ルート画面の作成
@@ -78,9 +114,10 @@ canvas = tkinter.Canvas(root, width=WINDOW_WIDTH, height=WINDOW_HEIGHT)
 canvas.pack()
 
 # ボードの描画
-board = BORAD(BOARD_LEN)
+board = BORAD()
 drawer = BORAD_DRAWER(BOARD_BEGIN_OFFSET, CELL_LEN)
 drawer.draw_board(board, canvas)
 
+canvas.bind("<Button-1>", canvas_click)
 # 実行
 root.mainloop()
