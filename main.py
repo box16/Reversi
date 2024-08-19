@@ -6,39 +6,53 @@ WINDOW_HEIGHT = 528
 BOARD_BEGIN_OFFSET = 72
 CELL_LEN = 48
 
-GREEN = 255
-BLACK = 0
-WHITE = 1
+GREEN = "GREEN"
+BLACK = "BLACK"
+WHITE = "WHITE"
+
+
+class Koma:
+    COLOR_SET = {GREEN, BLACK, WHITE}
+
+    def __init__(self):
+        self.color = GREEN
+
+    def set_color(self, color):
+        if color in self.COLOR_SET:
+            self.color = color
+        else:
+            raise Exception("設定可能値以外")
+
+    def turn_color(self):
+        if self.color == GREEN:
+            raise Exception("反転不可")
+        self.color = BLACK if self.color == BLACK else WHITE
+
+    def get_color(self):
+        return self.color
 
 
 class BORAD:
     BOARD_LEN = 8
 
     def __init__(self):
-        self.board = bytearray(self.BOARD_LEN**2)
+        self.board = []
+        for i in range(self.BOARD_LEN**2):
+            self.board.append(Koma())
         self.initialize()
 
     def initialize(self):
-        for i in range(self.BOARD_LEN**2):
-            self.set_color(i, GREEN)
+        # ここ上手いこと置き換え
         self.set_color(27, BLACK)
         self.set_color(28, WHITE)
         self.set_color(36, BLACK)
         self.set_color(35, WHITE)
 
     def set_color(self, pos, color):
-        self.board[pos] = color
+        self.board[pos].set_color(color)
 
     def get_color(self, pos):
-        return self.board[pos]
-
-    def get_color_str(self, pos):
-        if self.board[pos] == GREEN:
-            return "Green"
-        elif self.board[pos] == BLACK:
-            return "Black"
-        else:
-            return "White"
+        return self.board[pos].get_color()
 
     def get_side_len(self):
         return self.BOARD_LEN
@@ -80,7 +94,7 @@ class BORAD_DRAWER:
                 begin[1] + r,
                 begin[0] + self.cell_len - r,
                 begin[1] + self.cell_len - r,
-                fill=board.get_color_str(i),
+                fill=board.get_color(i),
                 width=2,
             )
 
