@@ -95,18 +95,39 @@ class RULE:
 
 
 class PIECE_ARE_NEARBY(RULE):
-    def check(self, board, pos):
+    def check(self, board, pos,now_color):
         vicinity = [-1, 0, 1]
+        can_turn_piece = []
         for i in vicinity:
             for j in vicinity:
                 if (i, j) == (0, 0):
                     continue
                 check_pos = (pos[0] + i, pos[1] + j)
-                if board.is_valid_pos(check_pos) and not board.is_empty(check_pos):
-                    return True
-                else:
+                is_piece_nearby = board.is_valid_pos(check_pos) and (not board.is_empty(check_pos))
+                if not is_piece_nearby:
                     continue
-        return False
+                
+                is_enemy_piece = board.get_color(check_pos) != board.get_color(pos)
+                if not is_enemy_piece:
+                    continue
+                
+                turn_piece_temp = []
+                vector = 1
+                while True:
+                    check_pos = (pos[0] + (i*vector), pos[1] + (j*vector))
+                    if not board.is_valid_pos(check_pos):
+                        break
+                    elif board.is_empty(check_pos):
+                        break
+                    elif now_color == board.get_color(check_pos):
+                        can_turn_piece += turn_piece_temp
+                        break
+                    else:
+                        turn_piece_temp.append(check_pos)
+                        vector += 1
+                        continue
+
+        return can_turn_piece
 
 
 class BOARD_UI:
@@ -178,15 +199,18 @@ class GAME_CONTROLLER:
         self.canvas = canvas
         self.teban = teban
 
-        self.rules = [PIECE_ARE_NEARBY()]
+        # ここリファクタ
+        self.rule = PIECE_ARE_NEARBY()
 
     def click_event(self, click_event):
         board_pos = self.board_ui.to_board_pos((click_event.x, click_event.y))
-        for rule in self.rules:
-            if not rule.check(self.board, board_pos):
-                raise Exception("チェック通らず")
+        change_pos = self.rule.check(self.board, board_pos,self.teban.get())
+        if not change_pos:
+            raise Exception("チェック通らず")
 
         self.board.set_color(board_pos, self.teban.get())
+        for pos in change_pos:
+            self.board.turn_color(pos)
         self.teban.next()
         self.update()
 
