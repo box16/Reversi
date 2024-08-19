@@ -47,9 +47,9 @@ class BORAD:
     def initialize(self):
         half = int(self.BOARD_LEN / 2)
 
+        self.set_color((half, half), BLACK)
         self.set_color((half - 1, half - 1), BLACK)
         self.set_color((half - 1, half), WHITE)
-        self.set_color((half, half), BLACK)
         self.set_color((half, half - 1), WHITE)
 
     def set_color(self, pos, color):
