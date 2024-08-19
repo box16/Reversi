@@ -26,7 +26,7 @@ class Koma:
     def turn_color(self):
         if self.color == GREEN:
             raise Exception("反転不可")
-        self.color = BLACK if self.color == BLACK else WHITE
+        self.color = WHITE if self.color == BLACK else BLACK
 
     def get_color(self):
         return self.color
@@ -48,23 +48,33 @@ class BORAD:
         self.set_color(36, BLACK)
         self.set_color(35, WHITE)
 
-    def set_color(self, pos, color):
-        self.board[pos].set_color(color)
+    def set_color(self, pos_1d, color):
+        self.board[pos_1d].set_color(color)
 
-    def get_color(self, pos):
-        return self.board[pos].get_color()
+    def turn_color(self, pos_1d):
+        self.board[pos_1d].turn_color()
+
+    def get_color(self, pos_1d):
+        return self.board[pos_1d].get_color()
 
     def get_side_len(self):
         return self.BOARD_LEN
 
-    def convert_index_2d_1d(self, pos):
-        return pos[1] * self.BOARD_LEN + pos[0]
+    def convert_index_2d_1d(self, pos_2d):
+        return pos_2d[1] * self.BOARD_LEN + pos_2d[0]
 
-    def convert_index_1d_2d(self, pos):
-        return (pos % self.BOARD_LEN, pos // self.BOARD_LEN)
+    def convert_index_1d_2d(self, pos_1d):
+        return (pos_1d % self.BOARD_LEN, pos_1d // self.BOARD_LEN)
+
+    def change_color(self, pos_2d):
+        pos_1d = self.convert_index_2d_1d(pos_2d)
+        if self.get_color(pos_1d) == GREEN:
+            self.set_color(pos_1d, BLACK)
+        else:
+            self.turn_color(pos_1d)
 
 
-class BORAD_DRAWER:
+class BORAD_UI:
     def __init__(self, offset, cell_len):
         self.offset = offset
         self.cell_len = cell_len
@@ -98,25 +108,35 @@ class BORAD_DRAWER:
                 width=2,
             )
 
+    def pos_convert(self, pos):
+        if (pos[0] < BOARD_BEGIN_OFFSET) or (
+            pos[0] > WINDOW_WIDTH - BOARD_BEGIN_OFFSET
+        ):
+            raise Exception("範囲外")
+        if (pos[1] < BOARD_BEGIN_OFFSET) or (
+            pos[1] > WINDOW_HEIGHT - BOARD_BEGIN_OFFSET
+        ):
+            raise Exception("範囲外")
 
-def canvas_click(click_event):
-    if (click_event.x < BOARD_BEGIN_OFFSET) or (
-        click_event.x > WINDOW_WIDTH - BOARD_BEGIN_OFFSET
-    ):
-        return
-    if (click_event.y < BOARD_BEGIN_OFFSET) or (
-        click_event.y > WINDOW_HEIGHT - BOARD_BEGIN_OFFSET
-    ):
-        return
+        return (
+            int((pos[0] - BOARD_BEGIN_OFFSET) / CELL_LEN),
+            int((pos[1] - BOARD_BEGIN_OFFSET) / CELL_LEN),
+        )
 
-    click_pos = (
-        int((click_event.x - BOARD_BEGIN_OFFSET) / CELL_LEN),
-        int((click_event.y - BOARD_BEGIN_OFFSET) / CELL_LEN),
-    )
-    click_pos = board.convert_index_2d_1d(click_pos)
 
-    board.set_color(click_pos, BLACK)
-    drawer.draw_board(board, canvas)
+class GAME_CONTROLLER:
+    def __init__(self, board_ui, board, canvas):
+        self.board_ui = board_ui
+        self.board = board
+        self.canvas = canvas
+
+    def click_event(self, click_event):
+        board_pos = self.board_ui.pos_convert((click_event.x, click_event.y))
+        self.board.change_color(board_pos)
+        self.update()
+
+    def update(self):
+        self.board_ui.draw_board(self.board, self.canvas)
 
 
 # ルート画面の作成
@@ -129,9 +149,10 @@ canvas.pack()
 
 # ボードの描画
 board = BORAD()
-drawer = BORAD_DRAWER(BOARD_BEGIN_OFFSET, CELL_LEN)
-drawer.draw_board(board, canvas)
+board_ui = BORAD_UI(BOARD_BEGIN_OFFSET, CELL_LEN)
+game_controller = GAME_CONTROLLER(board_ui, board, canvas)
+game_controller.update()
 
-canvas.bind("<Button-1>", canvas_click)
+canvas.bind("<Button-1>", game_controller.click_event)
 # 実行
 root.mainloop()
