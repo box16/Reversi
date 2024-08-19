@@ -121,16 +121,29 @@ class BORAD_UI:
         )
 
 
+class TEBAN_CONTROLLER:
+    def __init__(self):
+        self.now = BLACK
+
+    def next(self):
+        self.now = WHITE if self.now == BLACK else BLACK
+
+    def get(self):
+        return self.now
+
+
 class GAME_CONTROLLER:
-    def __init__(self, board_ui, board, canvas):
+    def __init__(self, board_ui, board, canvas, teban):
         self.board_ui = board_ui
         self.board = board
         self.canvas = canvas
+        self.teban = teban
 
     def click_event(self, click_event):
         board_pos = self.board_ui.to_board_pos((click_event.x, click_event.y))
         if self.board.can_click(board_pos):
-            self.board.set_color(board_pos, BLACK)
+            self.board.set_color(board_pos, self.teban.get())
+            self.teban.next()
         self.update()
 
     def update(self):
@@ -148,7 +161,10 @@ canvas.pack()
 # ボードの描画
 board = BORAD()
 board_ui = BORAD_UI(BOARD_BEGIN_OFFSET, CELL_LEN)
-game_controller = GAME_CONTROLLER(board_ui, board, canvas)
+
+teban = TEBAN_CONTROLLER()
+
+game_controller = GAME_CONTROLLER(board_ui, board, canvas, teban)
 game_controller.update()
 
 canvas.bind("<Button-1>", game_controller.click_event)
