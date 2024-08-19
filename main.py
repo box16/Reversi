@@ -11,7 +11,7 @@ BLACK = "BLACK"
 WHITE = "WHITE"
 
 
-class Koma:
+class PIECE:
     COLOR_SET = {GREEN, BLACK, WHITE}
 
     def __init__(self):
@@ -32,7 +32,7 @@ class Koma:
         return self.color
 
 
-class BORAD:
+class BOARD:
     BOARD_LEN = 8  # 偶数を想定
 
     def __init__(self):
@@ -40,9 +40,14 @@ class BORAD:
         for i in range(self.BOARD_LEN):
             column = []
             for j in range(self.BOARD_LEN):
-                column.append(Koma())
+                column.append(PIECE())
             self.board.append(column)
         self.initialize()
+
+    def is_valid_pos(self, pos):
+        return ((0 <= pos[0]) and (pos[0] < self.BOARD_LEN)) and (
+            (0 <= pos[1]) and (pos[1] < self.BOARD_LEN)
+        )
 
     def initialize(self):
         half = int(self.BOARD_LEN / 2)
@@ -53,25 +58,58 @@ class BORAD:
         self.set_color((half, half - 1), WHITE)
 
     def set_color(self, pos, color):
-        self.get_koma(pos).set_color(color)
+        if not self.is_valid_pos(pos):
+            raise Exception("範囲外")
+        self.get_piece(pos).set_color(color)
 
     def turn_color(self, pos):
-        self.get_koma(pos).turn_color()
+        if not self.is_valid_pos(pos):
+            raise Exception("範囲外")
+        self.get_piece(pos).turn_color()
 
     def get_color(self, pos):
-        return self.get_koma(pos).get_color()
+        if not self.is_valid_pos(pos):
+            raise Exception("範囲外")
+        return self.get_piece(pos).get_color()
 
     def get_side_len(self):
         return self.BOARD_LEN
 
-    def can_click(self, pos):
-        return self.get_color(pos) == GREEN
-
-    def get_koma(self, pos):
+    def get_piece(self, pos):
+        if not self.is_valid_pos(pos):
+            raise Exception("範囲外")
         return self.board[pos[0]][pos[1]]
 
+    def is_empty(self, pos):
+        if not self.is_valid_pos(pos):
+            raise Exception("範囲外")
+        return self.get_color(pos) == GREEN
 
-class BORAD_UI:
+
+class RULE:
+    def __init__(self) -> None:
+        pass
+
+    def check(self, board, pos):
+        raise NotImplementedError("継承先未定義")
+
+
+class PIECE_ARE_NEARBY(RULE):
+    def check(self, board, pos):
+        vicinity = [-1, 0, 1]
+        for i in vicinity:
+            for j in vicinity:
+                if (i, j) == (0, 0):
+                    continue
+                check_pos = (pos[0] + i, pos[1] + j)
+                if board.is_valid_pos(check_pos) and not board.is_empty(check_pos):
+                    return True
+                else:
+                    continue
+        return False
+
+
+class BOARD_UI:
     def __init__(self, offset, cell_len):
         self.offset = offset
         self.cell_len = cell_len
@@ -106,6 +144,7 @@ class BORAD_UI:
                     )
 
     def to_board_pos(self, pos):
+        # これの責務をどこかに移すか
         if (pos[0] < BOARD_BEGIN_OFFSET) or (
             pos[0] > WINDOW_WIDTH - BOARD_BEGIN_OFFSET
         ):
@@ -139,11 +178,16 @@ class GAME_CONTROLLER:
         self.canvas = canvas
         self.teban = teban
 
+        self.rules = [PIECE_ARE_NEARBY()]
+
     def click_event(self, click_event):
         board_pos = self.board_ui.to_board_pos((click_event.x, click_event.y))
-        if self.board.can_click(board_pos):
-            self.board.set_color(board_pos, self.teban.get())
-            self.teban.next()
+        for rule in self.rules:
+            if not rule.check(self.board, board_pos):
+                raise Exception("チェック通らず")
+
+        self.board.set_color(board_pos, self.teban.get())
+        self.teban.next()
         self.update()
 
     def update(self):
@@ -159,8 +203,8 @@ canvas = tkinter.Canvas(root, width=WINDOW_WIDTH, height=WINDOW_HEIGHT)
 canvas.pack()
 
 # ボードの描画
-board = BORAD()
-board_ui = BORAD_UI(BOARD_BEGIN_OFFSET, CELL_LEN)
+board = BOARD()
+board_ui = BOARD_UI(BOARD_BEGIN_OFFSET, CELL_LEN)
 
 teban = TEBAN_CONTROLLER()
 
