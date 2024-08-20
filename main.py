@@ -45,23 +45,24 @@ class GAME_CONTROLLER:
         self.board_ui.draw_board(self.board, self.canvas)
 
 
-# ルート画面の作成
-root = tkinter.Tk()
-root.geometry(f"{WINDOW_WIDTH}x{WINDOW_HEIGHT}")
+if __name__ == "__main__":
+    # ルート画面の作成
+    root = tkinter.Tk()
+    root.geometry(f"{WINDOW_WIDTH}x{WINDOW_HEIGHT}")
 
-# キャンバスウィジェットの配置
-canvas = tkinter.Canvas(root, width=WINDOW_WIDTH, height=WINDOW_HEIGHT)
-canvas.pack()
+    # キャンバスウィジェットの配置
+    canvas = tkinter.Canvas(root, width=WINDOW_WIDTH, height=WINDOW_HEIGHT)
+    canvas.pack()
 
-# ボードの描画
-board = BOARD()
-board_ui = BOARD_UI(BOARD_BEGIN_OFFSET, CELL_LEN)
+    # ボードの描画
+    board = BOARD()
+    board_ui = BOARD_UI(BOARD_BEGIN_OFFSET, CELL_LEN)
 
-teban = TEBAN_CONTROLLER()
+    teban = TEBAN_CONTROLLER()
 
-game_controller = GAME_CONTROLLER(board_ui, board, canvas, teban)
-game_controller.update()
+    game_controller = GAME_CONTROLLER(board_ui, board, canvas, teban)
+    game_controller.update()
 
-canvas.bind("<Button-1>", game_controller.click_event)
-# 実行
-root.mainloop()
+    canvas.bind("<Button-1>", game_controller.click_event)
+    # 実行
+    root.mainloop()
