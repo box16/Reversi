@@ -1,10 +1,10 @@
 import tkinter
 from settings import PLAYER1, PLAYER2
 from settings import WINDOW_WIDTH, WINDOW_HEIGHT
-from settings import BOARD_BEGIN_OFFSET
-from settings import CELL_LEN
+from settings import BOARD_DRAW_OFFSET
+from settings import CELL_SIZE
 from board import BOARD
-from board_ui import BOARD_UI
+from board_drawer import BOARD_DRAWER
 from rule import PIECE_ARE_NEARBY
 
 
@@ -20,8 +20,8 @@ class TEBAN_CONTROLLER:
 
 
 class GAME_CONTROLLER:
-    def __init__(self, board_ui, board, canvas, teban):
-        self.board_ui = board_ui
+    def __init__(self, board_drawer, board, canvas, teban):
+        self.board_drawer = board_drawer
         self.board = board
         self.canvas = canvas
         self.teban = teban
@@ -30,7 +30,7 @@ class GAME_CONTROLLER:
         self.rule = PIECE_ARE_NEARBY()
 
     def click_event(self, click_event):
-        board_pos = self.board_ui.to_board_pos((click_event.x, click_event.y))
+        board_pos = self.board_drawer.to_board_pos((click_event.x, click_event.y))
         change_pos = self.rule.check(self.board, board_pos, self.teban.get())
         if not change_pos:
             raise Exception("チェック通らず")
@@ -42,7 +42,7 @@ class GAME_CONTROLLER:
         self.update()
 
     def update(self):
-        self.board_ui.draw_board(self.board, self.canvas)
+        self.board_drawer.draw()
 
 
 if __name__ == "__main__":
@@ -56,11 +56,11 @@ if __name__ == "__main__":
 
     # ボードの描画
     board = BOARD()
-    board_ui = BOARD_UI(BOARD_BEGIN_OFFSET, CELL_LEN)
+    board_drawer = BOARD_DRAWER(board, canvas)
 
     teban = TEBAN_CONTROLLER()
 
-    game_controller = GAME_CONTROLLER(board_ui, board, canvas, teban)
+    game_controller = GAME_CONTROLLER(board_drawer, board, canvas, teban)
     game_controller.update()
 
     canvas.bind("<Button-1>", game_controller.click_event)
