@@ -35,9 +35,9 @@ class GAME_CONTROLLER:
         if not change_pos:
             raise Exception("チェック通らず")
 
-        self.board.set_color(board_pos, self.teban.get())
+        self.board.set_status(board_pos, self.teban.get())
         for pos in change_pos:
-            self.board.turn_color(pos)
+            self.board.turn_status(pos)
         self.teban.next()
         self.update()
 

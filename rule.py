@@ -26,7 +26,7 @@ class PIECE_ARE_NEARBY(RULE):
                 if not is_piece_nearby:
                     continue
 
-                is_enemy_piece = board.get_color(check_pos) != board.get_color(pos)
+                is_enemy_piece = board.get_status(check_pos) != board.get_status(pos)
                 if not is_enemy_piece:
                     continue
 
@@ -38,7 +38,7 @@ class PIECE_ARE_NEARBY(RULE):
                         break
                     elif board.is_empty(check_pos):
                         break
-                    elif now_color == board.get_color(check_pos):
+                    elif now_color == board.get_status(check_pos):
                         can_turn_piece += turn_piece_temp
                         break
                     else:

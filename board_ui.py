@@ -25,7 +25,7 @@ class BOARD_UI:
                     fill=EMPTY,
                     width=2,
                 )
-                if board.get_color((i, j)) == EMPTY:
+                if board.get_status((i, j)) == EMPTY:
                     continue
                 else:
                     r = self.cell_len / 10
@@ -34,7 +34,7 @@ class BOARD_UI:
                         begin[1] + r,
                         begin[0] + self.cell_len - r,
                         begin[1] + self.cell_len - r,
-                        fill=board.get_color((i, j)),
+                        fill=board.get_status((i, j)),
                         width=2,
                     )
 
