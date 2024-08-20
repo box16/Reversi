@@ -1,11 +1,11 @@
-from settings import GREEN, BLACK, WHITE
+from settings import EMPTY, PLAYER1, PLAYER2
 
 
 class PIECE:
-    COLOR_SET = {GREEN, BLACK, WHITE}
+    COLOR_SET = {EMPTY, PLAYER1, PLAYER2}
 
     def __init__(self):
-        self.color = GREEN
+        self.color = EMPTY
 
     def set_color(self, color):
         if color in self.COLOR_SET:
@@ -14,9 +14,9 @@ class PIECE:
             raise Exception("設定可能値以外")
 
     def turn_color(self):
-        if self.color == GREEN:
+        if self.color == EMPTY:
             raise Exception("反転不可")
-        self.color = WHITE if self.color == BLACK else BLACK
+        self.color = PLAYER2 if self.color == PLAYER1 else PLAYER1
 
     def get_color(self):
         return self.color
@@ -42,10 +42,10 @@ class BOARD:
     def initialize(self):
         half = int(self.BOARD_LEN / 2)
 
-        self.set_color((half, half), BLACK)
-        self.set_color((half - 1, half - 1), BLACK)
-        self.set_color((half - 1, half), WHITE)
-        self.set_color((half, half - 1), WHITE)
+        self.set_color((half, half), PLAYER1)
+        self.set_color((half - 1, half - 1), PLAYER1)
+        self.set_color((half - 1, half), PLAYER2)
+        self.set_color((half, half - 1), PLAYER2)
 
     def set_color(self, pos, color):
         if not self.is_valid_pos(pos):
@@ -73,4 +73,4 @@ class BOARD:
     def is_empty(self, pos):
         if not self.is_valid_pos(pos):
             raise Exception("範囲外")
-        return self.get_color(pos) == GREEN
+        return self.get_color(pos) == EMPTY

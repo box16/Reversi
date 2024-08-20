@@ -1,5 +1,5 @@
 import tkinter
-from settings import BLACK, WHITE
+from settings import PLAYER1, PLAYER2
 from settings import WINDOW_WIDTH, WINDOW_HEIGHT
 from settings import BOARD_BEGIN_OFFSET
 from settings import CELL_LEN
@@ -10,10 +10,10 @@ from rule import PIECE_ARE_NEARBY
 
 class TEBAN_CONTROLLER:
     def __init__(self):
-        self.now = BLACK
+        self.now = PLAYER1
 
     def next(self):
-        self.now = WHITE if self.now == BLACK else BLACK
+        self.now = PLAYER2 if self.now == PLAYER1 else PLAYER1
 
     def get(self):
         return self.now

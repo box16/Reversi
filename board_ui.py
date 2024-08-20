@@ -1,4 +1,4 @@
-from settings import GREEN
+from settings import EMPTY
 from settings import WINDOW_WIDTH, WINDOW_HEIGHT
 from settings import BOARD_BEGIN_OFFSET
 from settings import CELL_LEN
@@ -22,10 +22,10 @@ class BOARD_UI:
                     begin[1],
                     begin[0] + self.cell_len,
                     begin[1] + self.cell_len,
-                    fill=GREEN,
+                    fill=EMPTY,
                     width=2,
                 )
-                if board.get_color((i, j)) == GREEN:
+                if board.get_color((i, j)) == EMPTY:
                     continue
                 else:
                     r = self.cell_len / 10

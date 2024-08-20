@@ -1,19 +1,19 @@
 import unittest
 from board import BOARD, PIECE
-from settings import GREEN, BLACK, WHITE
+from settings import EMPTY, PLAYER1, PLAYER2
 
 
 class TestPIECE(unittest.TestCase):
     def test_initial_color(self):
         piece = PIECE()
-        self.assertEqual(piece.get_color(), GREEN)
+        self.assertEqual(piece.get_color(), EMPTY)
 
     def test_set_color(self):
         piece = PIECE()
-        piece.set_color(BLACK)
-        self.assertEqual(piece.get_color(), BLACK)
-        piece.set_color(WHITE)
-        self.assertEqual(piece.get_color(), WHITE)
+        piece.set_color(PLAYER1)
+        self.assertEqual(piece.get_color(), PLAYER1)
+        piece.set_color(PLAYER2)
+        self.assertEqual(piece.get_color(), PLAYER2)
 
     def test_set_invalid_color(self):
         piece = PIECE()
@@ -23,11 +23,11 @@ class TestPIECE(unittest.TestCase):
 
     def test_turn_color(self):
         piece = PIECE()
-        piece.set_color(BLACK)
+        piece.set_color(PLAYER1)
         piece.turn_color()
-        self.assertEqual(piece.get_color(), WHITE)
+        self.assertEqual(piece.get_color(), PLAYER2)
         piece.turn_color()
-        self.assertEqual(piece.get_color(), BLACK)
+        self.assertEqual(piece.get_color(), PLAYER1)
 
     def test_turn_color_invalid(self):
         piece = PIECE()
@@ -41,18 +41,18 @@ class TestBOARD(unittest.TestCase):
         self.board = BOARD()
 
     def test_initial_board_setup(self):
-        self.assertEqual(self.board.get_color((3, 3)), BLACK)
-        self.assertEqual(self.board.get_color((4, 4)), BLACK)
-        self.assertEqual(self.board.get_color((3, 4)), WHITE)
-        self.assertEqual(self.board.get_color((4, 3)), WHITE)
+        self.assertEqual(self.board.get_color((3, 3)), PLAYER1)
+        self.assertEqual(self.board.get_color((4, 4)), PLAYER1)
+        self.assertEqual(self.board.get_color((3, 4)), PLAYER2)
+        self.assertEqual(self.board.get_color((4, 3)), PLAYER2)
 
     def test_set_color_valid(self):
-        self.board.set_color((0, 0), BLACK)
-        self.assertEqual(self.board.get_color((0, 0)), BLACK)
+        self.board.set_color((0, 0), PLAYER1)
+        self.assertEqual(self.board.get_color((0, 0)), PLAYER1)
 
     def test_set_color_invalid_pos(self):
         with self.assertRaises(Exception) as context:
-            self.board.set_color((8, 8), BLACK)
+            self.board.set_color((8, 8), PLAYER1)
         self.assertTrue("範囲外" in str(context.exception))
 
     def test_get_color_invalid_pos(self):
