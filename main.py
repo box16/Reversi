@@ -1,8 +1,7 @@
 import tkinter
 from settings import PLAYER1, PLAYER2
 from settings import WINDOW_WIDTH, WINDOW_HEIGHT
-from settings import BOARD_DRAW_OFFSET
-from settings import CELL_SIZE
+from settings import BOARD_DRAW_OFFSET, CELL_SIZE
 from board import BOARD
 from board_drawer import BOARD_DRAWER
 from rule import PIECE_ARE_NEARBY
@@ -30,7 +29,8 @@ class GAME_CONTROLLER:
         self.rule = PIECE_ARE_NEARBY()
 
     def click_event(self, click_event):
-        board_pos = self.board_drawer.to_board_pos((click_event.x, click_event.y))
+        board_pos = self.to_board_pos((click_event.x, click_event.y))
+
         change_pos = self.rule.check(self.board, board_pos, self.teban.get())
         if not change_pos:
             raise Exception("チェック通らず")
@@ -43,6 +43,17 @@ class GAME_CONTROLLER:
 
     def update(self):
         self.board_drawer.draw()
+
+    def to_board_pos(self, pos):
+        if (pos[0] < BOARD_DRAW_OFFSET) or (pos[0] > WINDOW_WIDTH - BOARD_DRAW_OFFSET):
+            raise Exception("範囲外")
+        if (pos[1] < BOARD_DRAW_OFFSET) or (pos[1] > WINDOW_HEIGHT - BOARD_DRAW_OFFSET):
+            raise Exception("範囲外")
+
+        return (
+            int((pos[0] - BOARD_DRAW_OFFSET) / CELL_SIZE),
+            int((pos[1] - BOARD_DRAW_OFFSET) / CELL_SIZE),
+        )
 
 
 if __name__ == "__main__":
