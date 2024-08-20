@@ -24,54 +24,46 @@ class PIECE:
 
 
 class BOARD:
-    BOARD_LEN = 8  # 偶数を想定
+    BOARD_LEN = 8
 
     def __init__(self):
         self.board = []
-        for i in range(self.BOARD_LEN):
+        for r in range(self.BOARD_LEN):
             column = []
-            for j in range(self.BOARD_LEN):
+            for c in range(self.BOARD_LEN):
                 column.append(PIECE())
             self.board.append(column)
-        self.initialize()
+        self._initialize()
+
+    def _initialize(self):
+        half = int(self.BOARD_LEN / 2)
+
+        self.set_status((half - 1, half), PLAYER1)
+        self.set_status((half, half - 1), PLAYER1)
+        self.set_status((half, half), PLAYER2)
+        self.set_status((half - 1, half - 1), PLAYER2)
+
+    def _get_piece(self, pos):
+        if not self.is_valid_pos(pos):
+            raise Exception("範囲外")
+        return self.board[pos[0]][pos[1]]
 
     def is_valid_pos(self, pos):
         return ((0 <= pos[0]) and (pos[0] < self.BOARD_LEN)) and (
             (0 <= pos[1]) and (pos[1] < self.BOARD_LEN)
         )
 
-    def initialize(self):
-        half = int(self.BOARD_LEN / 2)
-
-        self.set_status((half, half), PLAYER1)
-        self.set_status((half - 1, half - 1), PLAYER1)
-        self.set_status((half - 1, half), PLAYER2)
-        self.set_status((half, half - 1), PLAYER2)
-
     def set_status(self, pos, color):
-        if not self.is_valid_pos(pos):
-            raise Exception("範囲外")
-        self.get_piece(pos).set_status(color)
+        self._get_piece(pos).set_status(color)
 
     def turn_status(self, pos):
-        if not self.is_valid_pos(pos):
-            raise Exception("範囲外")
-        self.get_piece(pos).turn_status()
+        self._get_piece(pos).turn_status()
 
     def get_status(self, pos):
-        if not self.is_valid_pos(pos):
-            raise Exception("範囲外")
-        return self.get_piece(pos).get_status()
+        return self._get_piece(pos).get_status()
 
     def get_side_len(self):
         return self.BOARD_LEN
 
-    def get_piece(self, pos):
-        if not self.is_valid_pos(pos):
-            raise Exception("範囲外")
-        return self.board[pos[0]][pos[1]]
-
     def is_empty(self, pos):
-        if not self.is_valid_pos(pos):
-            raise Exception("範囲外")
         return self.get_status(pos) == EMPTY

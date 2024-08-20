@@ -47,21 +47,21 @@ class TestBOARD(unittest.TestCase):
         self.board = BOARD()
 
     def test_initial_board_setup(self):
-        self.assertEqual(self.board.get_status((3, 3)), PLAYER1)
-        self.assertEqual(self.board.get_status((4, 4)), PLAYER1)
-        self.assertEqual(self.board.get_status((3, 4)), PLAYER2)
-        self.assertEqual(self.board.get_status((4, 3)), PLAYER2)
+        self.assertEqual(self.board.get_status((3, 4)), PLAYER1)
+        self.assertEqual(self.board.get_status((4, 3)), PLAYER1)
+        self.assertEqual(self.board.get_status((3, 3)), PLAYER2)
+        self.assertEqual(self.board.get_status((4, 4)), PLAYER2)
 
-    def test_set_color_valid(self):
+    def test_set_status_valid(self):
         self.board.set_status((0, 0), PLAYER1)
         self.assertEqual(self.board.get_status((0, 0)), PLAYER1)
 
-    def test_set_color_invalid_pos(self):
+    def test_set_status_invalid_pos(self):
         with self.assertRaises(Exception) as context:
             self.board.set_status((8, 8), PLAYER1)
         self.assertTrue("範囲外" in str(context.exception))
 
-    def test_get_color_invalid_pos(self):
+    def test_get_status_invalid_pos(self):
         with self.assertRaises(Exception) as context:
             self.board.get_status((8, 8))
         self.assertTrue("範囲外" in str(context.exception))

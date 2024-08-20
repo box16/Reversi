@@ -15,9 +15,9 @@ class TestPIECE_ARE_NEARBY(unittest.TestCase):
         self.assertEqual(can_turn_piece, [])
 
     def test_pieces_nearby(self):
-        pos = (4, 2)
+        pos = (3, 2)
         can_turn_piece = self.rule.check(self.board, pos, PLAYER1)
-        self.assertEqual(can_turn_piece, [(4, 3)])
+        self.assertEqual(can_turn_piece, [(3, 3)])
 
     def test_invalid_position(self):
         with self.assertRaises(Exception):
