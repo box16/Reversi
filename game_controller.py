@@ -1,7 +1,7 @@
 from settings import BOARD_DRAW_OFFSET, CELL_SIZE
 from settings import WINDOW_WIDTH, WINDOW_HEIGHT
 from settings import PLAYER1, PLAYER2
-from rule import PIECE_ARE_NEARBY
+from board_checker import BOARD_CHECKER
 
 
 class TRUN_CONTROLLER:
@@ -22,12 +22,12 @@ class GAME_CONTROLLER:
         self.teban = TRUN_CONTROLLER()
 
         # ここリファクタ
-        self.rule = PIECE_ARE_NEARBY()
+        self.rule = BOARD_CHECKER()
 
     def click_event(self, click_event):
         board_pos = self.to_board_pos((click_event.x, click_event.y))
 
-        change_pos = self.rule.check(self.board, board_pos, self.teban.get())
+        change_pos = self.rule.get_turn_pieces(self.board, board_pos, self.teban.get())
         if not change_pos:
             raise Exception("チェック通らず")
 
