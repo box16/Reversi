@@ -33,6 +33,9 @@ class BOARD_CHECKER:
         if not self.board.is_valid_pos(pos):
             raise Exception("範囲外")
 
+        if not self.board.is_empty(pos):
+            return []
+
         exploration_candidates = self._get_exploration_candidates(pos)
         if not exploration_candidates:
             return []
@@ -47,6 +50,8 @@ class BOARD_CHECKER:
                     break
                 elif self.board.is_empty(check_pos):
                     break
+                elif check_pos == pos:
+                    continue
                 elif now_color == self.board.get_status(check_pos):
                     turn_pieces += turn_piece_temp
                     break

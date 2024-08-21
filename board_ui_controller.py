@@ -4,7 +4,7 @@ from settings import BOARD_DRAW_OFFSET
 from settings import CELL_SIZE
 
 
-class BOARD_DRAWER:
+class BOARD_UI_CONTROLLER:
     def __init__(self, board, canvas):
         self.board = board
         self.canvas = canvas
@@ -40,3 +40,18 @@ class BOARD_DRAWER:
                         fill=self.board.get_status((i, j)),
                         width=2,
                     )
+
+    def convert_board_pos(self, canvas_pos):
+        if (canvas_pos[0] < BOARD_DRAW_OFFSET) or (
+            canvas_pos[0] > WINDOW_WIDTH - BOARD_DRAW_OFFSET
+        ):
+            raise Exception("範囲外")
+        if (canvas_pos[1] < BOARD_DRAW_OFFSET) or (
+            canvas_pos[1] > WINDOW_HEIGHT - BOARD_DRAW_OFFSET
+        ):
+            raise Exception("範囲外")
+
+        return (
+            int((canvas_pos[0] - BOARD_DRAW_OFFSET) / CELL_SIZE),
+            int((canvas_pos[1] - BOARD_DRAW_OFFSET) / CELL_SIZE),
+        )

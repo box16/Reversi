@@ -1,8 +1,9 @@
 import tkinter
 from settings import WINDOW_WIDTH, WINDOW_HEIGHT
 from board import BOARD
-from board_drawer import BOARD_DRAWER
+from board_ui_controller import BOARD_UI_CONTROLLER
 from game_controller import GAME_CONTROLLER
+from board_controller import BOARD_CONTROLLER
 
 if __name__ == "__main__":
     # ルート画面の作成
@@ -15,12 +16,11 @@ if __name__ == "__main__":
 
     # ボードの描画
     board = BOARD()
-    board_drawer = BOARD_DRAWER(board, canvas)
+    board_ui_controller = BOARD_UI_CONTROLLER(board, canvas)
+    board_controller = BOARD_CONTROLLER(board)
 
-    game_controller = GAME_CONTROLLER(board_drawer, board)
+    game_controller = GAME_CONTROLLER(board_ui_controller, board_controller, canvas)
     game_controller.update()
 
-    # これどこかに
-    canvas.bind("<Button-1>", game_controller.click_event)
     # 実行
     root.mainloop()
