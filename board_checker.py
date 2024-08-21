@@ -1,17 +1,17 @@
 class BOARD_CHECKER:
     VICINITY = [-1, 0, 1]
 
-    def __init__(self):
-        pass
+    def __init__(self, board):
+        self.board = board
 
-    def _is_piece_exist(self, board, check_pos):
-        if not board.is_valid_pos(check_pos):
+    def _is_piece_exist(self, check_pos):
+        if not self.board.is_valid_pos(check_pos):
             return False
-        if board.is_empty(check_pos):
+        if self.board.is_empty(check_pos):
             return False
         return True
 
-    def _get_exploration_candidates(self, board, pos):
+    def _get_exploration_candidates(self, pos):
         exploration_candidates = []
         for i in self.VICINITY:
             for j in self.VICINITY:
@@ -19,21 +19,21 @@ class BOARD_CHECKER:
                     continue
 
                 check_pos = (pos[0] + i, pos[1] + j)
-                if not self._is_piece_exist(board, check_pos):
+                if not self._is_piece_exist(check_pos):
                     continue
-                if board.is_empty(check_pos):
+                if self.board.is_empty(check_pos):
                     continue
-                if board.get_status(check_pos) == board.get_status(pos):
+                if self.board.get_status(check_pos) == self.board.get_status(pos):
                     continue
                 exploration_candidates.append((i, j))
         return exploration_candidates
 
-    def get_turn_pieces(self, board, pos, now_color):
+    def get_turn_pieces(self, pos, now_color):
 
-        if not board.is_valid_pos(pos):
+        if not self.board.is_valid_pos(pos):
             raise Exception("範囲外")
 
-        exploration_candidates = self._get_exploration_candidates(board, pos)
+        exploration_candidates = self._get_exploration_candidates(pos)
         if not exploration_candidates:
             return []
 
@@ -43,11 +43,11 @@ class BOARD_CHECKER:
             range = 1
             while True:
                 check_pos = (pos[0] + (ec[0] * range), pos[1] + (ec[1] * range))
-                if not board.is_valid_pos(check_pos):
+                if not self.board.is_valid_pos(check_pos):
                     break
-                elif board.is_empty(check_pos):
+                elif self.board.is_empty(check_pos):
                     break
-                elif now_color == board.get_status(check_pos):
+                elif now_color == self.board.get_status(check_pos):
                     turn_pieces += turn_piece_temp
                     break
                 else:

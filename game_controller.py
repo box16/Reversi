@@ -20,19 +20,16 @@ class GAME_CONTROLLER:
         self.board_drawer = board_drawer
         self.board = board
         self.teban = TRUN_CONTROLLER()
-
-        # ここリファクタ
-        self.rule = BOARD_CHECKER()
+        self.board_checker = BOARD_CHECKER(self.board)
 
     def click_event(self, click_event):
-        board_pos = self.to_board_pos((click_event.x, click_event.y))
-
-        change_pos = self.rule.get_turn_pieces(self.board, board_pos, self.teban.get())
-        if not change_pos:
-            raise Exception("チェック通らず")
+        board_pos = self._to_board_pos((click_event.x, click_event.y))
+        turn_pieces = self.board_checker.get_turn_pieces(board_pos, self.teban.get())
+        if not turn_pieces:
+            return
 
         self.board.set_status(board_pos, self.teban.get())
-        for pos in change_pos:
+        for pos in turn_pieces:
             self.board.turn_status(pos)
         self.teban.next()
         self.update()
@@ -40,7 +37,7 @@ class GAME_CONTROLLER:
     def update(self):
         self.board_drawer.draw()
 
-    def to_board_pos(self, pos):
+    def _to_board_pos(self, pos):
         if (pos[0] < BOARD_DRAW_OFFSET) or (pos[0] > WINDOW_WIDTH - BOARD_DRAW_OFFSET):
             raise Exception("範囲外")
         if (pos[1] < BOARD_DRAW_OFFSET) or (pos[1] > WINDOW_HEIGHT - BOARD_DRAW_OFFSET):
