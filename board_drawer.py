@@ -1,5 +1,4 @@
 from settings import EMPTY
-from settings import WINDOW_WIDTH, WINDOW_HEIGHT
 from settings import BOARD_DRAW_OFFSET
 from settings import CELL_SIZE
 

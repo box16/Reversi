@@ -12,8 +12,8 @@ class TestBOARD_DRAWER(unittest.TestCase):
 
     def test_draw(self):
         self.board_drawer.draw(self.board)
-        self.assertEqual(self.canvas.create_rectangle.call_count, 64)  # 8x8 squares
-        self.assertEqual(self.canvas.create_oval.call_count, 4)  # 4 initial pieces
+        self.assertEqual(self.canvas.create_rectangle.call_count, 64)
+        self.assertEqual(self.canvas.create_oval.call_count, 4)
 
 
 if __name__ == "__main__":
