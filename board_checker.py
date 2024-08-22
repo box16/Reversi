@@ -23,7 +23,7 @@ class BOARD_CHECKER:
                     continue
                 if self.board.is_empty(check_pos):
                     continue
-                if self.board.get_status(check_pos) == self.board.get_status(pos):
+                if self.board.get(check_pos) == self.board.get(pos):
                     continue
                 exploration_candidates.append((i, j))
         return exploration_candidates
@@ -52,7 +52,7 @@ class BOARD_CHECKER:
                     break
                 elif check_pos == pos:
                     continue
-                elif now_color == self.board.get_status(check_pos):
+                elif now_color == self.board.get(check_pos):
                     turn_pieces += turn_piece_temp
                     break
                 else:

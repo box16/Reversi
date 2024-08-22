@@ -27,7 +27,7 @@ class BOARD_DRAWER:
                     width=2,
                 )
 
-                if board.get_status((i, j)) == EMPTY:
+                if board.get((i, j)) == EMPTY:
                     continue
                 else:
                     r = CELL_SIZE / 10
@@ -36,6 +36,6 @@ class BOARD_DRAWER:
                         begin[1] + r,
                         begin[0] + CELL_SIZE - r,
                         begin[1] + CELL_SIZE - r,
-                        fill=board.get_status((i, j)),
+                        fill=board.get((i, j)),
                         width=2,
                     )

@@ -12,6 +12,6 @@ class BOARD_CONTROLLER:
 
     def update_board(self, pos, player):
         can_turn_pieces = self.board_checker.get_turn_pieces(pos, player)
-        self.board.set_status(pos, player)
+        self.board.set(pos, player)
         for piece in can_turn_pieces:
-            self.board.turn_status(piece)
+            self.board.turn(piece)

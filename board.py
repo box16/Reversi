@@ -5,21 +5,21 @@ class PIECE:
     def __init__(self):
         self.status = EMPTY
 
-    def set_status(self, status):
+    def set(self, status):
         if status in {PLAYER1, PLAYER2}:
             self.status = status
         else:
             raise Exception("設定可能値以外")
 
-    def turn_status(self):
+    def turn(self):
         if self.status == EMPTY:
             raise Exception("反転不可")
         self.status = PLAYER2 if self.status == PLAYER1 else PLAYER1
 
-    def get_status(self):
+    def get(self):
         return self.status
 
-    def reset_status(self):
+    def reset(self):
         self.status = EMPTY
 
 
@@ -38,10 +38,10 @@ class BOARD:
     def _initialize(self):
         half = int(self.BOARD_LEN / 2)
 
-        self.set_status((half - 1, half), PLAYER1)
-        self.set_status((half, half - 1), PLAYER1)
-        self.set_status((half, half), PLAYER2)
-        self.set_status((half - 1, half - 1), PLAYER2)
+        self.set((half - 1, half), PLAYER1)
+        self.set((half, half - 1), PLAYER1)
+        self.set((half, half), PLAYER2)
+        self.set((half - 1, half - 1), PLAYER2)
 
     def _get_piece(self, pos):
         if not self.is_valid_pos(pos):
@@ -53,17 +53,17 @@ class BOARD:
             (0 <= pos[1]) and (pos[1] < self.BOARD_LEN)
         )
 
-    def set_status(self, pos, color):
-        self._get_piece(pos).set_status(color)
+    def set(self, pos, color):
+        self._get_piece(pos).set(color)
 
-    def turn_status(self, pos):
-        self._get_piece(pos).turn_status()
+    def turn(self, pos):
+        self._get_piece(pos).turn()
 
-    def get_status(self, pos):
-        return self._get_piece(pos).get_status()
+    def get(self, pos):
+        return self._get_piece(pos).get()
 
     def get_side_len(self):
         return self.BOARD_LEN
 
     def is_empty(self, pos):
-        return self.get_status(pos) == EMPTY
+        return self.get(pos) == EMPTY
