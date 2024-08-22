@@ -1,62 +1,48 @@
 class BOARD_CHECKER:
-    VICINITY = [-1, 0, 1]
+    def _get_can_turn_pieces(self, board, base_pos, vector):
+        range_ = 0
+        result = []
+        while True:
+            check_pos = (
+                base_pos[0] + (vector[0] * range_),
+                base_pos[1] + (vector[1] * range_),
+            )
+            if not board.is_valid_pos(check_pos):
+                return []
+            if board.is_empty(check_pos):
+                return []
+            if board.get(check_pos) == board.get(base_pos):
+                result.append(check_pos)
+                range_ += 1
+                continue
+            return result
 
-    def __init__(self, board):
-        self.board = board
+    def get_can_place_pos(self, board, player):
+        board_len = board.get_side_len()
+        pos_list = [(i, j) for i in range(board_len) for j in range(board_len)]
+        visinity = [(i, j) for i in (-1, 0, 1) for j in (-1, 0, 1)]
+        visinity.remove((0, 0))
 
-    def _is_piece_exist(self, check_pos):
-        if not self.board.is_valid_pos(check_pos):
-            return False
-        if self.board.is_empty(check_pos):
-            return False
-        return True
+        result = {}
+        for p in pos_list:
+            if not board.is_empty(p):
+                continue
 
-    def _get_exploration_candidates(self, pos):
-        exploration_candidates = []
-        for i in self.VICINITY:
-            for j in self.VICINITY:
-                if (i, j) == (0, 0):
+            can_turn_pieces = []
+            for v in visinity:
+                check_pos = (p[0] + v[0], p[1] + v[1])
+                if not board.is_valid_pos(check_pos):
                     continue
-
-                check_pos = (pos[0] + i, pos[1] + j)
-                if not self._is_piece_exist(check_pos):
+                if board.is_empty(check_pos):
                     continue
-                if self.board.is_empty(check_pos):
+                if board.get(check_pos) == player:
                     continue
-                if self.board.get(check_pos) == self.board.get(pos):
+                tmp = self._get_can_turn_pieces(board, check_pos, v)
+                if not tmp:
                     continue
-                exploration_candidates.append((i, j))
-        return exploration_candidates
+                can_turn_pieces += tmp
 
-    def get_turn_pieces(self, pos, now_color):
-
-        if not self.board.is_valid_pos(pos):
-            raise Exception("範囲外")
-
-        if not self.board.is_empty(pos):
-            return []
-
-        exploration_candidates = self._get_exploration_candidates(pos)
-        if not exploration_candidates:
-            return []
-
-        turn_pieces = []
-        for ec in exploration_candidates:
-            turn_piece_temp = []
-            range = 1
-            while True:
-                check_pos = (pos[0] + (ec[0] * range), pos[1] + (ec[1] * range))
-                if not self.board.is_valid_pos(check_pos):
-                    break
-                elif self.board.is_empty(check_pos):
-                    break
-                elif check_pos == pos:
-                    continue
-                elif now_color == self.board.get(check_pos):
-                    turn_pieces += turn_piece_temp
-                    break
-                else:
-                    turn_piece_temp.append(check_pos)
-                    range += 1
-                    continue
-        return turn_pieces
+            if not can_turn_pieces:
+                continue
+            result[p] = can_turn_pieces
+        return result
