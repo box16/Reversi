@@ -22,22 +22,19 @@ class PIECE:
     def reset(self):
         self.status = EMPTY
 
+    def is_empty(self):
+        return self.status == EMPTY
+
 
 class BOARD:
     BOARD_LEN = 8
 
     def __init__(self):
-        self.board = []
-        for r in range(self.BOARD_LEN):
-            column = []
-            for c in range(self.BOARD_LEN):
-                column.append(PIECE())
-            self.board.append(column)
-        self._initialize()
+        self.board = [
+            [PIECE() for j in range(self.BOARD_LEN)] for i in range(self.BOARD_LEN)
+        ]
 
-    def _initialize(self):
         half = int(self.BOARD_LEN / 2)
-
         self.set((half - 1, half), PLAYER1)
         self.set((half, half - 1), PLAYER1)
         self.set((half, half), PLAYER2)
@@ -53,6 +50,9 @@ class BOARD:
             (0 <= pos[1]) and (pos[1] < self.BOARD_LEN)
         )
 
+    def get_side_len(self):
+        return self.BOARD_LEN
+
     def set(self, pos, color):
         self._get_piece(pos).set(color)
 
@@ -62,8 +62,8 @@ class BOARD:
     def get(self, pos):
         return self._get_piece(pos).get()
 
-    def get_side_len(self):
-        return self.BOARD_LEN
+    def reset(self, pos):
+        return self._get_piece(pos).reset()
 
     def is_empty(self, pos):
-        return self.get(pos) == EMPTY
+        return self._get_piece(pos).is_empty()
