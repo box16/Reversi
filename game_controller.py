@@ -1,7 +1,7 @@
 from settings import PLAYER1, PLAYER2
 
 
-class TRUN_CONTROLLER:
+class TURN_CONTROLLER:
     def __init__(self):
         self.now = PLAYER1
 
@@ -13,16 +13,24 @@ class TRUN_CONTROLLER:
 
 
 class GAME_CONTROLLER:
-    def __init__(self, board, board_drawer, board_controller):
+    def __init__(self, board, board_drawer, board_checker):
         self.board = board
         self.board_drawer = board_drawer
-        self.board_controller = board_controller
-        self.teban = TRUN_CONTROLLER()
+        self.board_checker = board_checker
+        self.turn = TURN_CONTROLLER()
+
+    def prepare(self):
+        self.board_drawer.draw(self.board)
+        # 終了チェックをここに入れる
+        self.can_place_pos = self.board_checker.get_can_place_pos(
+            self.board, self.turn.get()
+        )
 
     def proceed(self, pos):
-        can_update_board = self.board_controller.can_update_board(pos, self.teban.get())
-        if not can_update_board:
-            raise Exception("返せるピースなし")
-        self.board_controller.update_board(pos, self.teban.get())
-        self.teban.next()
-        self.board_drawer.draw(self.board)
+        if pos not in self.can_place_pos:
+            raise Exception("配置可能位置でない")
+        self.board.set(pos, self.turn.get())
+        for p in self.can_place_pos[pos]:
+            self.board.turn(p)
+        self.turn.next()
+        self.prepare()

@@ -5,7 +5,7 @@ from settings import CELL_SIZE
 from board import BOARD
 from board_drawer import BOARD_DRAWER
 from game_controller import GAME_CONTROLLER
-from board_controller import BOARD_CONTROLLER
+from board_checker import BOARD_CHECKER
 
 
 def convert_board_pos(event):
@@ -28,10 +28,10 @@ if __name__ == "__main__":
 
     board = BOARD()
     board_drawer = BOARD_DRAWER(canvas)
-    board_controller = BOARD_CONTROLLER(board)
-    game_controller = GAME_CONTROLLER(board, board_drawer, board_controller)
+    board_checker = BOARD_CHECKER()
+    game_controller = GAME_CONTROLLER(board, board_drawer, board_checker)
 
-    board_drawer.draw(board)
+    game_controller.prepare()
     canvas.bind(
         "<Button-1>", lambda event: game_controller.proceed(convert_board_pos(event))
     )
