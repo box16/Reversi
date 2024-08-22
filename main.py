@@ -25,11 +25,13 @@ if __name__ == "__main__":
     root.geometry(f"{WINDOW_WIDTH}x{WINDOW_HEIGHT}")
     canvas = tkinter.Canvas(root, width=WINDOW_WIDTH, height=WINDOW_HEIGHT)
     canvas.pack()
+    turn_label = tkinter.Label(root, font=("Arial", 18))
+    turn_label.place(x=WINDOW_WIDTH // 3, y=20)
 
     board = BOARD()
     board_drawer = BOARD_DRAWER(canvas)
     board_checker = BOARD_CHECKER()
-    game_controller = GAME_CONTROLLER(board, board_drawer, board_checker)
+    game_controller = GAME_CONTROLLER(board, board_drawer, board_checker, turn_label)
 
     game_controller.prepare()
     canvas.bind(

@@ -13,14 +13,16 @@ class TURN_CONTROLLER:
 
 
 class GAME_CONTROLLER:
-    def __init__(self, board, board_drawer, board_checker):
+    def __init__(self, board, board_drawer, board_checker, turn_label):
         self.board = board
         self.board_drawer = board_drawer
         self.board_checker = board_checker
         self.turn = TURN_CONTROLLER()
+        self.turn_label = turn_label
 
     def prepare(self):
         self.board_drawer.draw(self.board)
+        self.turn_label.config(text=f"Next : {self.turn.get()}")
         # 終了チェックをここに入れる
         self.can_place_pos = self.board_checker.get_can_place_pos(
             self.board, self.turn.get()
