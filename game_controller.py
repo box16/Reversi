@@ -19,14 +19,27 @@ class GAME_CONTROLLER:
         self.board_checker = board_checker
         self.turn = TURN_CONTROLLER()
         self.turn_label = turn_label
+        self.is_end_pre = False
+        self.is_end = False
 
     def prepare(self):
-        self.board_drawer.draw(self.board)
-        self.turn_label.config(text=f"Next : {self.turn.get()}")
-        # 終了チェックをここに入れる
         self.can_place_pos = self.board_checker.get_can_place_pos(
             self.board, self.turn.get()
         )
+        self.turn_label.config(text=f"Next : {self.turn.get()}")
+        self.board_drawer.draw(self.board)
+
+        if not self.can_place_pos:
+            if self.is_end_pre:
+                self.is_end = True
+                self.end()
+                return
+            else:
+                self.is_end_pre = True
+                self.turn.next()
+                self.prepare()
+                return
+        self.is_end_pre = False
 
     def proceed(self, pos):
         if pos not in self.can_place_pos:
@@ -36,3 +49,6 @@ class GAME_CONTROLLER:
             self.board.turn(p)
         self.turn.next()
         self.prepare()
+
+    def end(self):
+        self.turn_label.config(text=f"Game Is End.")
