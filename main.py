@@ -24,9 +24,9 @@ if __name__ == "__main__":
     root = tkinter.Tk()
     root.geometry(f"{WINDOW_WIDTH}x{WINDOW_HEIGHT}")
     canvas = tkinter.Canvas(root, width=WINDOW_WIDTH, height=WINDOW_HEIGHT)
-    canvas.pack()
+    canvas.place(x=0, y=0)
     turn_label = tkinter.Label(root, font=("Arial", 18))
-    turn_label.place(x=WINDOW_WIDTH // 3, y=20)
+    turn_label.pack(side="top", anchor="n")
 
     board = BOARD()
     board_drawer = BOARD_DRAWER(canvas)
