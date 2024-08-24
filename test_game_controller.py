@@ -81,7 +81,7 @@ class TestGameController(unittest.TestCase):
         for pos in place_pos:
             self.game_controller.proceed(pos)
         self.assertTrue(self.game_controller.is_end)
-        self.assertEqual(self.mock_turn_label.text, "Game Is End.")
+        self.assertTrue("Game Is End." in self.mock_turn_label.text)
 
 
 class MockBoardDrawer:

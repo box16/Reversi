@@ -53,8 +53,8 @@ class BOARD:
     def get_side_len(self):
         return self.BOARD_LEN
 
-    def set(self, pos, color):
-        self._get_piece(pos).set(color)
+    def set(self, pos, player):
+        self._get_piece(pos).set(player)
 
     def turn(self, pos):
         self._get_piece(pos).turn()
@@ -67,3 +67,11 @@ class BOARD:
 
     def is_empty(self, pos):
         return self._get_piece(pos).is_empty()
+
+    def count(self, player):
+        num = 0
+        for row in self.board:
+            for piece in row:
+                if piece.get() == player:
+                    num += 1
+        return num

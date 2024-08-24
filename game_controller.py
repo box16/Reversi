@@ -51,4 +51,8 @@ class GAME_CONTROLLER:
         self.prepare()
 
     def end(self):
-        self.turn_label.config(text=f"Game Is End.")
+        player_1_num = self.board.count(PLAYER1)
+        player_2_num = self.board.count(PLAYER2)
+        self.turn_label.config(
+            text=f"Game Is End.\n {PLAYER1} : {player_1_num} {PLAYER2} : {player_2_num} "
+        )

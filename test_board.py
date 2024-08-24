@@ -85,6 +85,11 @@ class TestBOARD(unittest.TestCase):
         self.board.turn((3, 4))
         self.assertEqual(self.board.get((3, 4)), PLAYER2)
 
+    def test_count(self):
+        self.board.set((0, 0), PLAYER1)
+        self.assertEqual(self.board.count(PLAYER1), 3)
+        self.assertEqual(self.board.count(PLAYER2), 2)
+
 
 if __name__ == "__main__":
     unittest.main()
